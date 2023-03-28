@@ -15,19 +15,7 @@ namespace App\Core;
 use App\Core\Exceptions\AppInvalidRequestException;
 
 class Controller
-{
-    // public function view($view, $data = []) {
-    //     extract($data);
-    //     require '../App/views/'.$view.'.view.php';
-    // }
-    // public function render($view, $data = []) {        
-    //     require '../App/views/layouts/template.view.php';
-    // }
-    // public function renderView($view, $data = []) {   
-    //     extract($data);     
-    //     require '../App/views/'.$view.'.view.php';
-    // }
-    
+{    
     public function getMethod()
     {
         return $_SERVER['REQUEST_METHOD'];
@@ -66,7 +54,6 @@ class Controller
         http_response_code($status);
         header("Content-Type: application/json");
         echo json_encode($data);
-        exit;
     }
     private function getBaseUrl()
     {
@@ -75,13 +62,12 @@ class Controller
         if ($_SERVER['SERVER_PORT'] != '80') {
             $base .= ':' . $_SERVER['SERVER_PORT'];
         }
-        $base .= '/productpage/public';
+        $base .= '/public';
 
         return $base;
     }
     protected function redirect($url)
     {
         header("Location: " . $this->getBaseUrl() . $url);
-        exit;
     }
 }
