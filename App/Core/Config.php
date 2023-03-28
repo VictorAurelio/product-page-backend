@@ -41,9 +41,7 @@ class Config
     public function configureCors()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            if (isset($_SERVER['HTTP_ORIGIN'])) {
-                // Adicione aqui a lista branca de origens permitidas
-                $allowedOrigins = array('http://localhost:3000', '*');
+                $allowedOrigins = array('http://localhost:3000', 'http://example.com');
                 $origin = $_SERVER['HTTP_ORIGIN'];
                 if (in_array($origin, $allowedOrigins)) {
                     header('Access-Control-Allow-Origin: ' . $origin);
@@ -51,7 +49,6 @@ class Config
                     header('Access-Control-Allow-Headers: Content-Type, Authorization');
                     header('Access-Control-Allow-Credentials: true');
                 }
-            }
             exit;
         }
     }
