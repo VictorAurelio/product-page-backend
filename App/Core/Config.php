@@ -46,8 +46,8 @@ class Config
     }
     private function setCorsHeaders()
     {
-        header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, content-type, application/json, Authorization');
-        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization');
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         header('Access-Control-Allow-Origin: *');
     }
 }
