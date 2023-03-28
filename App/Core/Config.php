@@ -17,7 +17,7 @@ class Config
     public function constants()
     {
         define('ROOT', dirname(dirname(__FILE__)) . 'backend/App');
-        define('ENVIRONMENT', 'development');
+        define('ENVIRONMENT', 'production');
         define('JWT_SECRET_KEY', '!A@mda!@$%sMAao28man8o');
         define('DEFAULT_ACTION', 'index');
         define('JWT_EXPIRATION_TIME', 604800); // one week expiration time
@@ -32,10 +32,10 @@ class Config
             define('DB_PASS', '');
         } else {
             define('BASE_URL', 'https://juniortest-victoraurelio.000webhostapp.com');
-            define('DB_NAME', 'id20512292_productpage');
-            define('DB_HOST', 'localhost');
-            define('DB_USER', 'id20512292_root');
-            define('DB_PASS', 'x_af?3NyQ]e%Kx])');
+            define('DB_NAME', 'heroku_c83b35d5a5b112f');
+            define('DB_HOST', 'us-cdbr-east-06.cleardb.net');
+            define('DB_USER', 'be0933e9a21856');
+            define('DB_PASS', '916bbf23');
         }
     }
     public function configureCors()
