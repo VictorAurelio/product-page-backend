@@ -40,9 +40,10 @@ class Config
     }
     public function configureCors()
     {
+        $this->setCorsHeaders();
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            $this->setCorsHeaders();
-            exit;
+            http_response_code(200);
+            exit();
         }
     }
     private function setCorsHeaders()
