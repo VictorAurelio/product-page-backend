@@ -41,11 +41,13 @@ class Config
     public function configureCors()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-            header('Access-Control-Allow-Headers: Origin,X-Requested-With,Content-Type,Accept,content-type,application/json, authorization');
-            header('Access-Control-Allow-Credentials: true');
-            exit;
+            $this->setCorsHeaders();
         }
+    }
+    private function setCorsHeaders()
+    {
+        header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, content-type, application/json, Authorization');
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH');
+        header('Access-Control-Allow-Origin: *');
     }
 }
