@@ -31,7 +31,7 @@ class Config
             define('DB_USER', 'root');
             define('DB_PASS', '');
         } else {
-            define('BASE_URL', 'https://juniortest-victoraurelio.000webhostapp.com');
+            define('BASE_URL', 'https://product-page-backend.herokuapp.com/public');
             define('DB_NAME', 'heroku_c83b35d5a5b112f');
             define('DB_HOST', 'us-cdbr-east-06.cleardb.net');
             define('DB_USER', 'be0933e9a21856');
@@ -49,6 +49,6 @@ class Config
     {
         header('Access-Control-Allow-Headers: Content-Type, Authorization');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Origin: http://localhost:3000/');
     }
 }
