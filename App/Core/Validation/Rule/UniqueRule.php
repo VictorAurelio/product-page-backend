@@ -92,6 +92,10 @@ class UniqueRule implements Rule
      */
     public function getMessage(array $data, string $field, array $params)
     {
-        return json_encode(["message" => "{$field} already exists in the database"]);
+        return json_encode(
+            [
+                "message" => "{$field} already exists in the database"
+            ]
+        );
     }
 }

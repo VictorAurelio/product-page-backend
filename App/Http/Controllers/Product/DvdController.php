@@ -86,7 +86,7 @@ class DvdController implements ProductSpecificControllerInterface
         $data = $this->productController->getSanitizer()->clean($data);
         $this->productController->getValidator()->validate($data, [
             'name' => ['required'],
-            'sku' => ['required', 'unique'],
+            'sku' => ['required', 'unique', 'no_whitespace'],
             'price' => ['required', 'not_null'],
             'category_id' => ['required'],
             'size' => ['required', 'not_null']
@@ -150,7 +150,7 @@ class DvdController implements ProductSpecificControllerInterface
         }
 
         $this->productController->getValidator()->validate($data, [
-            'sku' => ['required', "exist:products,sku,$currentSku"],
+            'sku' => ['required', "exist:products,sku,$currentSku", 'no_whitespace'],
             'price' => ['numeric', 'not_null'],
             'category_id' => ['required'],
             'size' => ['numeric', 'not_null']

@@ -36,8 +36,20 @@ class DimensionsFormatRule implements Rule
             return true;
         }
 
-        $regex = '/^\d+(\.\d+)?x\d+(\.\d+)?x\d+(\.\d+)?$/';
-        return preg_match($regex, $data[$field]);
+        $regex = '/^(\d+(\.\d+)?)(x(\d+(\.\d+)?)){2}$/';
+        if (!preg_match($regex, $data[$field])) {
+            return false;
+        }
+
+        // Verify if none of the values is equal to 0
+        $dimensions = explode('x', $data[$field]);
+        foreach ($dimensions as $dimension) {
+            if ((float)$dimension == 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
     /**
      * receives the data array, the field name, and an array of optional parameters
@@ -52,6 +64,11 @@ class DimensionsFormatRule implements Rule
      */
     public function getMessage(array $data, string $field, array $params)
     {
-        return "{$field} should have a valid format (HxWxL)";
+        return json_encode(
+            [
+                "message" => "{$field} should have a valid format (HxWxL)
+                                and none of the dimensions should be equal to 0"
+            ]
+        );
     }
 }

@@ -62,6 +62,10 @@ class MinRule implements Rule
     {
         $length = (int) $params[0];
 
-        return "{$field} should be at least {$length} characters";
+        return json_encode(
+            [
+                "message" => "{$field} should be at least {$length} characters"
+            ]
+        );
     }
 }

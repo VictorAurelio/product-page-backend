@@ -88,11 +88,19 @@ class ExistRule implements Rule
      * 
      * @return string
      */
-    public function getMessage(array $data, string $field, array $params)
-    {
+    public function getMessage(
+        array $data,
+        string $field,
+        array $params
+    ) {
         $this->table = $params[0] ?? '';
         $this->column = $params[1] ?? '';
-        return "{$field} already exists in the {$this->table}
-                table and {$this->column} column";
+
+        return json_encode(
+            [
+                "message" => "{$field} already exists in the {$this->table}
+                                table and {$this->column} column"
+            ]
+        );
     }
 }

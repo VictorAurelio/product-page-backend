@@ -12,7 +12,6 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Core\Database\DAO\Product\ProductOptionDAO;
 use App\Http\Controllers\Product\ProductSpecificControllerInterface;
 use App\Http\Controllers\Product\ProductController;
 use App\Core\Database\DAO\Product\FurnitureDAO;
@@ -87,7 +86,7 @@ class FurnitureController implements ProductSpecificControllerInterface
         $data = $this->productController->getSanitizer()->clean($data);
         $this->productController->getValidator()->validate($data, [
             'name' => ['required'],
-            'sku' => ['required', 'unique'],
+            'sku' => ['required', 'unique', 'no_whitespace'],
             'price' => ['required', 'numeric', 'not_null'],
             'category_id' => ['required'],
             'dimensions' => ['required', 'dimensions', 'not_null']
@@ -156,7 +155,7 @@ class FurnitureController implements ProductSpecificControllerInterface
         }
 
         $this->productController->getValidator()->validate($data, [
-            'sku' => ['required', "exist:products,sku,$currentSku"],
+            'sku' => ['required', "exist:products,sku,$currentSku", 'no_whitespace'],
             'price' => ['required', 'numeric', 'not_null'],
             'category_id' => ['required'],
             'dimensions' => ['required', 'dimensions']

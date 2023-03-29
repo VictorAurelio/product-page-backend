@@ -52,6 +52,10 @@ class EmailRule implements Rule
      */
     public function getMessage(array $data, string $field, array $params)
     {
-        return "{$field} should be an email";
+        return json_encode(
+            [
+                "message" => "{$field} should be an email"
+            ]
+        );
     }
 }

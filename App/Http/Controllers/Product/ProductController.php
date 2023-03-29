@@ -20,6 +20,7 @@ use App\Core\Validation\Rule\NotNullOrNegativeRule;
 use App\Core\Validation\Rule\DimensionsFormatRule;
 use App\Core\Validation\Rule\Data\DataSanitizer;
 use App\Core\Database\DAO\Product\ProductDAO;
+use App\Core\Validation\Rule\NoWhitespaceRule;
 use App\Http\Controllers\User\UserController;
 use App\Core\Validation\Rule\RequiredIfRule;
 use App\Models\ProductOption\ProductOption;
@@ -111,6 +112,7 @@ class ProductController extends Controller
                 Product::TABLESCHEMA,
                 'sku'
             ))
+            ->addRule('no_whitespace', new NoWhitespaceRule())
             ->addRule('required', new RequiredRule())
             ->addRule('exist', new ExistRule($this->getConnection()))
             ->addRule('required_if', new RequiredIfRule())
@@ -621,7 +623,7 @@ class ProductController extends Controller
      * 
      * @return ProductDAO
      */
-    public function getProductDAO(): ProductDAO
+    private function getProductDAO(): ProductDAO
     {
         return $this->productDAO;
     }

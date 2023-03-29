@@ -20,7 +20,6 @@ use App\DTO\Product\ProductOptionDTO;
 use App\DTO\Product\BookDTO;
 use App\Models\Product\Book;
 use App\DTO\DTOInterface;
-use Exception;
 
 /**
  * The BookController class implements the ProductSpecificControllerInterface
@@ -86,7 +85,7 @@ class BookController implements ProductSpecificControllerInterface
         $data = $this->productController->getSanitizer()->clean($data);
         $this->productController->getValidator()->validate($data, [
             'name' => ['required'],
-            'sku' => ['required', 'unique'],
+            'sku' => ['required', 'unique', 'no_whitespace'],
             'price' => ['required', 'not_null'],
             'category_id' => ['required'],
             'weight' => ['required', 'not_null']
@@ -151,7 +150,7 @@ class BookController implements ProductSpecificControllerInterface
         }
 
         $this->productController->getValidator()->validate($data, [
-            'sku' => ['required', "exist:products,sku,$currentSku"],
+            'sku' => ['required', "exist:products,sku,$currentSku", 'no_whitespace'],
             'price' => ['numeric', 'not_null'],
             'category_id' => ['required'],
             'weight' => ['numeric', 'not_null']

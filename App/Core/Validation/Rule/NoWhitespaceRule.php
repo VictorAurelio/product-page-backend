@@ -12,36 +12,27 @@
 
 namespace App\Core\Validation\Rule;
 
-use InvalidArgumentException;
-
-/**
- * Represents a validation rule to check if a field's value is
- * one of a set of valid values
- */
-class InRule implements Rule
+class NoWhitespaceRule implements Rule
 {
     /**
-     * Checks if the given field value is one of the set of valid values.
+     * This method checks if the specified field in the data contains any whitespace
      * 
      * @param array $data
      * @param string $field
      * @param array $params
      * 
-     * @throws InvalidArgumentException
-     * 
      * @return bool
      */
     public function validate(array $data, string $field, array $params)
     {
-        if (empty($params)) {
-            throw new InvalidArgumentException(
-                'specify a list of valid values'
-            );
+        if (empty($data[$field])) {
+            return true;
         }
-        return in_array($data[$field], $params);
+
+        return !preg_match('/\s/', $data[$field]);
     }
     /**
-     * Gets the error message for the InRule validation.
+     * This method returns the error message when the validation rule fails
      * 
      * @param array $data
      * @param string $field
@@ -51,12 +42,9 @@ class InRule implements Rule
      */
     public function getMessage(array $data, string $field, array $params)
     {
-        $validValues = implode(', ', $params);
-
         return json_encode(
             [
-                "message" => "The value of {$field} must be one of the following:
-                                {$validValues}"
+                "message" => "{$field} should not contain any whitespace"
             ]
         );
     }

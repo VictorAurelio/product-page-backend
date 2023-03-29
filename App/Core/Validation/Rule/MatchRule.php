@@ -66,6 +66,10 @@ class MatchRule implements Rule
     {
         $compareField = $params[0];
 
-        return "{$field} and {$compareField} do not match";
+        return json_encode(
+            [
+                "message" => "{$field} and {$compareField} do not match"
+            ]
+        );
     }
 }

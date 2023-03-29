@@ -52,6 +52,12 @@ class RequiredIfRule implements Rule
     {
         $otherField = $params[0];
         $requiredValue = $params[1];
-        return "{$field} is required if {$otherField} is {$requiredValue}";
+
+        return json_encode(
+            [
+                "message" => "{$field} is required if
+                                {$otherField} is {$requiredValue}"
+            ]
+        );
     }
 }

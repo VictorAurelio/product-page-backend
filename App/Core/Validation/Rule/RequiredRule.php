@@ -46,6 +46,10 @@ class RequiredRule implements Rule
      */
     public function getMessage(array $data, string $field, array $params)
     {
-        return "{$field} is required";
+        return json_encode(
+            [
+                "message" => "{$field} is required"
+            ]
+        );
     }
 }

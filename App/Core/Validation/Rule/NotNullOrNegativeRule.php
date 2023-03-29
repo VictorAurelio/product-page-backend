@@ -45,6 +45,10 @@ class NotNullOrNegativeRule implements Rule
      */
     public function getMessage(array $data, string $field, array $params)
     {
-        return json_encode(["message" => "{$field} should not be null or negative"]);
+        return json_encode(
+            [
+                "message" => "{$field} should not be null or negative"
+            ]
+        );
     }
 }
