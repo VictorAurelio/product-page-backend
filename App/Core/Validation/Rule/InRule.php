@@ -14,17 +14,41 @@ namespace App\Core\Validation\Rule;
 
 use InvalidArgumentException;
 
+/**
+ * Represents a validation rule to check if a field's value is
+ * one of a set of valid values
+ */
 class InRule implements Rule
 {
+    /**
+     * Checks if the given field value is one of the set of valid values.
+     * 
+     * @param array $data
+     * @param string $field
+     * @param array $params
+     * 
+     * @throws InvalidArgumentException
+     * 
+     * @return bool
+     */
     public function validate(array $data, string $field, array $params)
     {
         if (empty($params)) {
-            throw new InvalidArgumentException('specify a list of valid values');
+            throw new InvalidArgumentException(
+                'specify a list of valid values'
+            );
         }
-
         return in_array($data[$field], $params);
     }
-
+    /**
+     * Gets the error message for the InRule validation.
+     * 
+     * @param array $data
+     * @param string $field
+     * @param array $params
+     * 
+     * @return string
+     */
     public function getMessage(array $data, string $field, array $params)
     {
         $validValues = implode(', ', $params);

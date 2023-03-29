@@ -10,6 +10,13 @@
  * @link      https://github.com/VictorAurelio/product-page
  */
 
+/*
+    This is a configuration file that maps URLs to corresponding controller actions
+    in my web application. Each URL is associated with a specific controller method
+    that will be executed when that URL is accessed. The configuration includes URLs
+    for various user authentication and product management operations...
+*/
+
 return [
 
     '/' => '/product/showAllProducts',
@@ -17,8 +24,6 @@ return [
     '/user/sign-in' => '/user/signIn',
 
     '/user/sign-up' => '/user/signUp',
-
-    '/user/profile/{id}' => '/user/view/:id',
 
     '/user/logout' => '/user/logoutValidate',
 

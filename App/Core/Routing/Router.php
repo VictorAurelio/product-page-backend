@@ -14,23 +14,53 @@ namespace App\Core\Routing;
 
 use App\Core\Core;
 
+/**
+ * A class for managing the routes of my application.
+ */
 class Router extends Core
 {
     protected const PARAM_PATTERN = '(\{[a-z0-9]{1,}\})'; //'#{([^}]+)}/#' -- // #{id}/comments/# -> /posts/123/comments/
     protected const OPT_PARAM_PATTERN = '([^/]*)(?:/?)'; // /posts/{id}/{slug?} -> /posts/123 and /posts/123/hello-world
     protected const REQ_PARAM_PATTERN = '(\{|\})'; // /posts/{id}/comments/ -> /posts/123/comments/
     protected const MAT_PARAM_PATTERN = '([a-z0-9-]{1,})';
+    /**
+     * variable used to store the URL being routed
+     * 
+     * @var
+     */
     protected $url;
+    /**
+     * variable used to store the application's routes
+     * 
+     * @var
+     */
     protected $routes;
-
+    /**
+     * constructor method for the Router class that initializes the routes variable
+     */
     public function __construct()
     {
         $this->routes = [];
     }
+    /**
+     * method for loading application routes from a file.
+     * 
+     * @param mixed $file
+     * 
+     * @return void
+     */
     public function loadRoutes($file)
     {
         $this->routes = include($file);
     }
+    /**
+     * method for matching a given URL against the application's defined routes
+     * and returning the matching URL with any associated parameters replaced.
+     * 
+     * @param mixed $url
+     * 
+     * @return mixed
+     */
     public function checkRoutes($url)
     {
         foreach ($this->routes as $path => $newUrl) {
@@ -55,7 +85,6 @@ class Router extends Core
                     $newUrl = str_replace(':' . $argKey, $argValue, $newUrl);
                 }
                 $url = $newUrl;
-                // var_dump($newUrl);
                 break;
             }
         }

@@ -17,12 +17,40 @@ use App\Http\Controllers\HomeController;
 use App\Core\Routing\Router;
 use App\Core\Config;
 
+/**
+ * The Core class serves as the main entry point for the application
+ * It loads the necessary dependencies and starts the application by
+ * calling the router and controller classes.
+ */
 class Core
 {
+    /**
+     * Summary of _errorController
+     * @var ErrorHandlerController
+     */
     private ErrorHandlerController $_errorController;
+    /**
+     * Summary of _homeController
+     * @var HomeController
+     */
     private HomeController $_homeController;
+    /**
+     * Summary of _config
+     * @var Config
+     */
     private Config $_config;
+    /**
+     * Summary of _router
+     * @var Router
+     */
     private Router $_router;
+    /**
+     * The constructor function initializes the Core class with the Config
+     * and Router dependencies, sets up constants and the environment type.
+     * 
+     * @param Config $config The Config dependency
+     * @param Router $router The Router dependency
+     */
     public function __construct(Config $config, Router $router)
     {
         $this->_router = $router;
@@ -31,6 +59,13 @@ class Core
         $this->_config->environmentType();
     }
 
+    /**
+     * The start function is called to start the application. It configures CORS,
+     * initializes the Error and Home controllers, and checks the URL for requested
+     * routes, controllers and actions.
+     * 
+     * @return void
+     */
     public function start()
     {
         $this->_config->configureCors();
@@ -38,7 +73,6 @@ class Core
         $this->_homeController = new HomeController();
         $parameters = [];
         $url = '/';
-        // var_dump($url);
 
         if (isset($_GET['url'])) {
             $url .= $_GET['url'];
@@ -47,41 +81,41 @@ class Core
         $this->_router->loadRoutes('routes.php');
         $url = $this->_router->checkRoutes($url);
 
-        // var_dump($url);
-        if (!empty($url) && $url != '/') {
-            $url = explode('/', $url);
-            array_shift($url);
-
-            $currentController = match (true) {
-                $url[0] === 'home' => "\App\Http\Controllers\HomeController",
-                default => "\\App\\Http\\Controllers\\" . ucfirst($url[0]) . "\\" . (ucfirst($url[0]) . 'Controller'),
-            };
-            array_shift($url);
-
-            $currentAction = (isset($url[0]) && !empty($url[0])) ? $url[0]  : DEFAULT_ACTION;
-            array_shift($url);
-            // var_dump($currentController);
-
-            if (count($url) > 0) {
-                $parameters = $url;
-            }
-        } else {
+        if (empty($url) || $url == '/') {
             $currentController = $this->_homeController;
             $currentAction = DEFAULT_ACTION;
             $controller = new $currentController();
             call_user_func(array($controller, $currentAction), $parameters);
             return;
         }
-        // Verify if the controller actually exists and if not, redirect to 404 page
-        if (class_exists($currentController)) {
-            $controller = new $currentController();
-            if (method_exists($controller, $currentAction)) {
-                call_user_func_array(array($controller, $currentAction), $parameters);
-            } else {
-                $this->_errorController->invalidParameters();
-            }
-        } else {
-            $this->_errorController->pageNotFound();
+
+        $url = explode('/', $url);
+        array_shift($url);
+
+        $currentController = match (true) {
+            $url[0] === 'home' => "\App\Http\Controllers\HomeController",
+            default => "\\App\\Http\\Controllers\\" . ucfirst($url[0]) . "\\" . (ucfirst($url[0]) . 'Controller'),
+        };
+        array_shift($url);
+
+        $currentAction = (isset($url[0]) && !empty($url[0])) ? $url[0] : DEFAULT_ACTION;
+        array_shift($url);
+
+        if (count($url) > 0) {
+            $parameters = $url;
         }
+
+        if (!class_exists($currentController)) {
+            $this->_errorController->pageNotFound();
+            return;
+        }
+
+        $controller = new $currentController();
+        if (!method_exists($controller, $currentAction)) {
+            $this->_errorController->invalidParameters();
+            return;
+        }
+
+        call_user_func_array(array($controller, $currentAction), $parameters);
     }
 }

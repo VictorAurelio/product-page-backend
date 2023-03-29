@@ -19,18 +19,23 @@ use App\DTO\DTOInterface;
 use Throwable;
 
 /**
- * Summary of BookDAO
+ * The BookDAO class is a data access object that extends the ProductDAO class.
+ * It provides methods for creating, updating, and retrieving books from a
+ * database.
  */
 class BookDAO extends ProductDAO
 {
     /**
-     * Summary of bookModel
+     * It is likely used for accessing and manipulating book data in a database.
      *
      * @var Book
      */
     protected Book $bookModel;
     /**
-     * Summary of __construct
+     * The construct method is the constructor of the BookDAO class.
+     * It accepts a Book object as a parameter, calls the parent constructor with
+     * this object, and assigns the bookModel property to this object. This likely
+     * sets up the BookDAO object for interacting with book data in a database.
      *
      * @param Book $bookModel
      */
@@ -39,6 +44,12 @@ class BookDAO extends ProductDAO
         parent::__construct($bookModel);
         $this->bookModel = $bookModel;
     }
+    /**
+     * The lastId method returns the last inserted ID from the database by calling
+     * the lastId() method of its parent class.
+     * 
+     * @return int
+     */
     public function lastId(): int
     {
         return parent::lastId();
@@ -57,25 +68,34 @@ class BookDAO extends ProductDAO
     public function create(DTOInterface $data): ?int
     {
         if (!$data instanceof BookDTO) {
-            throw new InvalidArgumentException('Expected BookDTO instance.');
+            throw new InvalidArgumentException(
+                'Expected BookDTO instance.'
+            );
         }
         try {
             // Convert BookDTO to array
             $fields = $data->toArray();
             // Remove the 'weight' field
             unset($fields['weight']);
-            
+
             $args = [
                 'table' => $this->dao->getSchema(),
                 'type' => 'insert',
                 'fields' => $fields
             ];
-            $query = $this->dao->getQueryBuilder()->buildQuery($args)->insertQuery();
-            $this->dao->getDataMapper()->persist(
-                $query,
-                $this->dao->getDataMapper()->buildInsertQueryParameters($fields)
-            );
-    
+            $query = $this->dao
+                ->getQueryBuilder()
+                ->buildQuery($args)
+                ->insertQuery();
+            $this->dao
+                ->getDataMapper()
+                ->persist(
+                    $query,
+                    $this->dao
+                        ->getDataMapper()
+                        ->buildInsertQueryParameters($fields)
+                );
+
             if ($this->dao->getDataMapper()->numRows() == 1) {
                 // Get the last inserted ID and return it
                 return $this->dao->lastID();
@@ -101,7 +121,9 @@ class BookDAO extends ProductDAO
     public function update(DTOInterface $data, string $primaryKey): bool
     {
         if (!$data instanceof BookDTO) {
-            throw new InvalidArgumentException('Expected FurnitureDTO instance.');
+            throw new InvalidArgumentException(
+                'Expected FurnitureDTO instance.'
+            );
         }
 
         // Convert BookDTO to array
@@ -117,12 +139,19 @@ class BookDAO extends ProductDAO
                 'fields' => $fields,
                 'primary_key' => $primaryKey
             ];
-            $query = $this->dao->getQueryBuilder()->buildQuery($args)->updateQuery();
-            
-            $this->dao->getDataMapper()->persist(
-                $query,
-                $this->dao->getDataMapper()->buildUpdateQueryParameters($fields)
-            );
+            $query = $this->dao
+                ->getQueryBuilder()
+                ->buildQuery($args)
+                ->updateQuery();
+
+            $this->dao
+                ->getDataMapper()
+                ->persist(
+                    $query,
+                    $this->dao
+                        ->getDataMapper()
+                        ->buildUpdateQueryParameters($fields)
+                );
             if ($this->dao->getDataMapper()->numRows() === 1) {
                 return true;
             }
@@ -132,11 +161,19 @@ class BookDAO extends ProductDAO
 
         return false;
     }
-    public function getAllBooks(): array {
+    /**
+     * The method returns an array of all books that belong to the category ID
+     * stored in the bookModel object, by calling the readWithOptions()
+     * method with specific options.
+     * 
+     * @return array
+     */
+    public function getAllBooks(): array
+    {
         $conditions = ['*'];
         $category_id = $this->bookModel->getCategoryId();
         $parameters = ["category_id = $category_id"];
-    
+
         return $this->readWithOptions($conditions, $parameters);
-    }   
+    }
 }

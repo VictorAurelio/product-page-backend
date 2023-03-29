@@ -20,20 +20,24 @@ use App\DTO\DTOInterface;
 class UserDTO implements DTOInterface
 {
     /**
-     * Summary of email
+     * private _email
      * @var
      */
     private $_email;
     /**
-     * Summary of password
+     * private _password
      * @var
      */
     private $_password;
     /**
-     * Summary of name
+     * private _name
      * @var
      */
     private $_name;
+    /**
+     * private _id
+     * @var
+     */
     private $_id;
     public function getId()
     {
@@ -44,7 +48,8 @@ class UserDTO implements DTOInterface
         $this->_id = $id;
     }
     /**
-     * Summary of getEmail
+     * retrieve the user email
+     * 
      * @return mixed
      */
     public function getEmail()
@@ -52,8 +57,10 @@ class UserDTO implements DTOInterface
         return $this->_email;
     }
     /**
-     * Summary of setEmail
+     * modify the user email
+     * 
      * @param mixed $email
+     * 
      * @return void
      */
     public function setEmail($email)
@@ -61,7 +68,8 @@ class UserDTO implements DTOInterface
         $this->_email = $email;
     }
     /**
-     * Summary of getPassword
+     * retrieve the user password
+     * 
      * @return mixed
      */
     public function getPassword()
@@ -69,8 +77,10 @@ class UserDTO implements DTOInterface
         return $this->_password;
     }
     /**
-     * Summary of setPassword
+     * modify the user's password
+     * 
      * @param mixed $password
+     * 
      * @return void
      */
     public function setPassword($password)
@@ -78,7 +88,8 @@ class UserDTO implements DTOInterface
         $this->_password = $password;
     }
     /**
-     * Summary of getName
+     * retrieve the user name
+     * 
      * @return mixed
      */
     public function getName()
@@ -86,8 +97,10 @@ class UserDTO implements DTOInterface
         return $this->_name;
     }
     /**
-     * Summary of setName
+     * modify the user's name
+     * 
      * @param mixed $name
+     * 
      * @return void
      */
     public function setName($name)
@@ -95,7 +108,8 @@ class UserDTO implements DTOInterface
         $this->_name = $name;
     }
     /**
-     * Summary of toArray
+     * returns an array with the UserDTO's properties.
+     * 
      * @return array
      */
     public function toArray(): array

@@ -15,16 +15,33 @@ namespace App\DTO\Product;
 use App\DTO\Product\ProductDTO;
 
 /**
- * Summary of FurnitureDTO
+ * The FurnitureDTO class represents a data transfer object for furniture products
  */
 class FurnitureDTO extends ProductDTO
 {
+    /**
+     * private property _dimensions
+     * 
+     * @var string
+     */
     private string $_dimensions;
       
+    /**
+     * retrieve the product's dimensions
+     * 
+     * @return string
+     */
     public function getDimensions(): string
     {
         return $this->_dimensions;
     }
+    /**
+     * modify the product's dimensions
+     * 
+     * @param string $dimensions
+     * 
+     * @return FurnitureDTO
+     */
     public function setDimensions(string $dimensions): self
     {
         $this->_dimensions = $dimensions;
@@ -41,6 +58,13 @@ class FurnitureDTO extends ProductDTO
     {
         return explode('x', $this->_dimensions);
     }
+    /**
+     * method returns an array representation of the FurnitureDTO object,
+     * including the properties inherited from ProductDTO and
+     * the _dimensions property.
+     * 
+     * @return array
+     */
     public function toArray(): array
     {
         $parentArray = parent::toArray();

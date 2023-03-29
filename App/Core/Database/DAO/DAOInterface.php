@@ -20,7 +20,8 @@ use App\DTO\DTOInterface;
 interface DAOInterface
 {
     /**
-     * Summary of create
+     * creates a new record in the database using a DTO, returns the ID of the
+     * newly created record or null if there was an error
      * 
      * @param DTOInterface $data
      * 
@@ -28,7 +29,8 @@ interface DAOInterface
      */
     public function create(DTOInterface $data): ?int;
     /**
-     * Summary of read
+     * retrieves data from the database based on specified conditions
+     * and parameters, returns an array of matching records
      * 
      * @param array $selectors
      * @param array $conditions
@@ -44,7 +46,9 @@ interface DAOInterface
         array $optional = []
     ): array;
     /**
-     * Summary of readWithOptions
+     * retrieves data from the database based on specified selectors, conditions,
+     * and parameters, performs a join operation on two tables, and returns
+     * an array of matching records
      * 
      * @param array $selectors
      * @param array $conditions
@@ -59,7 +63,8 @@ interface DAOInterface
         array $parameters = []
     ): array;
     /**
-     * Summary of update
+     * updates a record in the database using a DTO and a primary key value,
+     * returns a boolean indicating whether the update was successful or not
      * 
      * @param DTOInterface $data
      * @param string       $primaryKey
@@ -69,13 +74,16 @@ interface DAOInterface
     public function update(DTOInterface $data, string $primaryKey): bool;
 
     /**
-     * Summary of delete
+     * deletes one or more records from the database based on specified conditions,
+     * returns a boolean indicating whether the deletion was successful or not
+     * 
      * @param array $conditions
+     * 
      * @return bool
      */
     public function delete(array $conditions): bool;
     /**
-     * Summary of deleteByIds
+     * Retrieves the IDs passed by the controllers to enable the mass delete
      * 
      * @param array $ids
      * 
@@ -83,7 +91,8 @@ interface DAOInterface
      */
     public function deleteByIds(array $ids): bool;
     /**
-     * Summary of rawQuery
+     * executes a raw SQL query with specified conditions,
+     * returns the results of the query
      *
      * @param string       $rawQuery
      * @param DTOInterface $conditions

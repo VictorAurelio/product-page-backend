@@ -15,8 +15,24 @@ namespace App\Core\Validation\Rule;
 use App\Core\Validation\Rule\Rule;
 use InvalidArgumentException;
 
+/**
+ * A class representing a validation rule to check if a given
+ * string has a minimum length. Made for password verification at first
+ * but it's useful anywhere.
+ */
 class MinRule implements Rule
 {
+    /**
+     * Validates if a given field has a minimum length
+     * 
+     * @param array $data
+     * @param string $field
+     * @param array $params
+     * 
+     * @throws InvalidArgumentException
+     * 
+     * @return bool
+     */
     public function validate(array $data, string $field, array $params)
     {
         if (empty($data[$field])) {
@@ -24,14 +40,24 @@ class MinRule implements Rule
         }
 
         if (empty($params[0])) {
-            throw new InvalidArgumentException('specify a min length');
+            throw new InvalidArgumentException(
+                'specify a min length'
+            );
         }
 
         $length = (int) $params[0];
 
         return strlen($data[$field]) >= $length;
     }
-
+    /**
+     * Returns the error message for when the validation fails
+     * 
+     * @param array $data
+     * @param string $field
+     * @param array $params
+     * 
+     * @return string
+     */
     public function getMessage(array $data, string $field, array $params)
     {
         $length = (int) $params[0];

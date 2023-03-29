@@ -14,12 +14,28 @@ namespace App\Core;
 
 use App\Core\Exceptions\AppInvalidRequestException;
 
+/**
+ * Summary of Controller
+ */
 class Controller
-{    
+{
+    /**
+     * retrieves the HTTP method used in the current request.
+     * 
+     * @return mixed
+     */
     public function getMethod()
     {
         return $_SERVER['REQUEST_METHOD'];
     }
+    /**
+     * retrieves the request data from $_GET, $_POST, or the request body
+     * (for PUT and DELETE requests) and returns it as an array.
+     * 
+     * @throws AppInvalidRequestException
+     * 
+     * @return array
+     */
     public function getRequestData()
     {
         $method = $this->getMethod();
@@ -35,7 +51,11 @@ class Controller
         // header('Content-Type: application/json');
         return $data;
     }
-
+    /**
+     * retrieves JSON data from the request body and decodes it into an array.
+     * 
+     * @return mixed
+     */
     private function getJsonData()
     {
         $data = file_get_contents('php://input');
@@ -48,6 +68,14 @@ class Controller
         }
         return $json;
     }
+    /**
+     * sends a JSON response with the given data and HTTP status code.
+     * 
+     * @param mixed $data
+     * @param mixed $status
+     * 
+     * @return void
+     */
     public function json($data, $status = 200)
     {
         ob_clean(); // Clear the output buffer
@@ -55,9 +83,20 @@ class Controller
         header("Content-Type: application/json");
         echo json_encode($data);
     }
+    /**
+     * retrieves the base URL of the application.
+     * 
+     * @return string
+     */
     private function getBaseUrl()
     {
-        $base = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https://' : 'http://';
+        $base = (isset(
+                $_SERVER['HTTPS']
+            ) && strtolower(
+                $_SERVER['HTTPS']
+            ) == 'on'
+        ) ? 'https://' : 'http://';
+
         $base .= $_SERVER['SERVER_NAME'];
         if ($_SERVER['SERVER_PORT'] != '80') {
             $base .= ':' . $_SERVER['SERVER_PORT'];
@@ -66,6 +105,13 @@ class Controller
 
         return $base;
     }
+    /**
+     * redirects the user to the given URL.
+     * 
+     * @param mixed $url
+     * 
+     * @return void
+     */
     protected function redirect($url)
     {
         header("Location: " . $this->getBaseUrl() . $url);

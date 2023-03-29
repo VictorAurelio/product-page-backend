@@ -12,8 +12,16 @@
 
 namespace App\Core;
 
+/**
+ * Configuration file which holds some of the information required by the system
+ */
 class Config
 {
+    /**
+     * Defines constants used in the application.
+     * 
+     * @return void
+     */
     public function constants()
     {
         define('ROOT', dirname(dirname(__FILE__)) . 'backend/App');
@@ -22,6 +30,11 @@ class Config
         define('DEFAULT_ACTION', 'index');
         define('JWT_EXPIRATION_TIME', 604800); // one week expiration time
     }
+    /**
+     * Sets the configuration variables for the environment.
+     * 
+     * @return void
+     */
     public function environmentType()
     {
         if (ENVIRONMENT === 'development') {
@@ -38,6 +51,11 @@ class Config
             define('DB_PASS', '916bbf23');
         }
     }
+    /**
+     * Configures the CORS headers to allow cross-origin resource sharing.
+     * 
+     * @return void
+     */
     public function configureCors()
     {
         $this->setCorsHeaders();
@@ -46,6 +64,11 @@ class Config
             exit();
         }
     }
+    /**
+     * Sets the Access-Control-Allow headers to allow CORS.
+     * 
+     * @return void
+     */
     private function setCorsHeaders()
     {
         header('Access-Control-Allow-Headers: Content-Type, Authorization');

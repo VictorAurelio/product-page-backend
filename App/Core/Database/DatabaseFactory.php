@@ -18,6 +18,10 @@ use App\Core\Database\Connection\ConnectionInterface;
 use App\Core\Database\DatabaseService\DatabaseService;
 use App\Core\Database\DAO\DAO;
 
+/**
+ * The DatabaseFactory class is responsible for creating a new database connection,
+ * initializing a DAO instance and returning it.
+ */
 class DatabaseFactory
 {
     protected ConnectionInterface $connection;
@@ -25,6 +29,17 @@ class DatabaseFactory
     protected string $tableSchema;
     protected array $options;
 
+    /**
+     * Constructor for the DatabaseFactory class that takes in a
+     * ConnectionInterface object, a string representing the table schema, a string
+     * representing the table schema ID, and an optional array of options.
+     * The properties of the class are initialized with these parameters.
+     * 
+     * @param ConnectionInterface $connection
+     * @param string $tableSchema
+     * @param string $tableSchemaId
+     * @param array|null $options
+     */
     public function __construct(ConnectionInterface $connection, string $tableSchema, string $tableSchemaId, ?array $options = [])
     {
         $this->tableSchemaId = $tableSchemaId;
@@ -32,6 +47,14 @@ class DatabaseFactory
         $this->connection = $connection;
         $this->options = $options;
     }
+    /**
+     * This function creates a new database connection using the configuration data
+     * stored in the constants DB_HOST, DB_NAME, DB_USER, and DB_PASS. It returns
+     * an instance of the MysqlConnection class that implements the
+     * ConnectionInterface.
+     * 
+     * @return ConnectionInterface
+     */
     public static function createConnection(): ConnectionInterface
     {
         $dbConfig = [
@@ -43,7 +66,12 @@ class DatabaseFactory
 
         return new MysqlConnection($dbConfig);
     }
-
+    /**
+     * creates and returns a new DAO instance, which uses a DatabaseService object
+     * for data mapping and a QueryBuilder object for building SQL queries.
+     * 
+     * @return object
+     */
     public function initialize(): object
     {
         $connection = self::createConnection();

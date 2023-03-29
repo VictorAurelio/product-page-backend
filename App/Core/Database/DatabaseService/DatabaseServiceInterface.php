@@ -12,28 +12,35 @@
 
 namespace App\Core\Database\DatabaseService;
 
+/**
+ * DatabaseServiceInterface which defines the methods for a database service
+ */
 interface DatabaseServiceInterface
 {
     /**
      * Prepare the query string
      * 
      * @param string $sqlQuery
+     * 
      * @return self
      */
     public function prepare(string $sqlQuery): self;
 
     /**
-     * Explicit dat type for the parameter using the PDO::PARAM_* constants.
+     * Explicit data type for the parameter using the PDO::PARAM_* constants.
      * 
      * @param mixed $value
+     * 
      * @return mixed
      */
     public function bind($value);
 
     /**
+     * binds the parameters to the query string.
      * 
      * @param array $fields
      * @param bool $isSearch
+     * 
      * @return mixed
      */
     public function bindParameters(array $fields, bool $isSearch = false): self;
@@ -45,12 +52,18 @@ interface DatabaseServiceInterface
      */
     public function numRows(): int;
 
+    /**
+     * executes a prepared statement.
+     * 
+     * @return void
+     */
     public function execute();
 
+
     /**
-     * Returns a single database row as an object
+     * returns a single database row as an object.
      * 
-     * @return Object
+     * @return object|null
      */
     public function result(): ?Object;
 
@@ -64,8 +77,9 @@ interface DatabaseServiceInterface
     /**
      * Returns the last inserted row ID from database table
      * 
-     * @return int
      * @throws Throwable
+     * 
+     * @return int
      */
     public function getLastId(): int;
 }

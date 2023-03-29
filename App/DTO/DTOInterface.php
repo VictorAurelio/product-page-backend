@@ -11,7 +11,12 @@
  */
 
 namespace App\DTO;
-
+/**
+ * This is an interface called DTOInterface that has a single method declaration
+ * toArray(), which should return an array representing the DTO instance.
+ * This interface is used to enforce consistency across DTO classes that
+ * represent different types of data.
+ */
 interface DTOInterface
 {
     public function toArray(): array;

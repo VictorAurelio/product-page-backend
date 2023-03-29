@@ -21,18 +21,23 @@ use InvalidArgumentException;
 use Throwable;
 
 /**
- * Summary of ProductDAO
+ * ProductDAO is a class that extends the DAO class and implements the DAOInterface
+ * It provides basic data access methods such as create, read, update, and delete,
+ * as well as methods for retrieving the last inserted ID and reading data
+ * with specific options.
  */
 class ProductDAO extends DAO implements DAOInterface
 {
     /**
-     * Summary of dao
+     * It is likely used for helping accessing and manipulating dao class.
      *
      * @var DAO
      */
     protected DAO $dao;
     /**
-     * Summary of __construct
+     * Constructs a ProductDAO object with a DAO object and initializes the
+     * superclass DAO object with the parameters needed to communicate with
+     * the database.
      * 
      * @param Product $productModel
      */
@@ -47,6 +52,12 @@ class ProductDAO extends DAO implements DAOInterface
             $this->dao->options
         );
     }
+    /**
+     * The lastId method returns the last inserted ID from the database by calling
+     * the lastId() method of its parent class.
+     * 
+     * @return int
+     */
     public function lastId(): int
     {
         return parent::lastID();
@@ -64,7 +75,9 @@ class ProductDAO extends DAO implements DAOInterface
     public function create(DTOInterface $data): ?int
     {
         if (!$data instanceof ProductDTO) {
-            throw new InvalidArgumentException('Expected ProductDTO instance.');
+            throw new InvalidArgumentException(
+                'Expected ProductDTO instance.'
+            );
         }
         try {
             // Convert ProductDTO to array
@@ -75,12 +88,23 @@ class ProductDAO extends DAO implements DAOInterface
                 'type' => 'insert',
                 'fields' => $fields
             ];
-            $query = $this->dao->getQueryBuilder()->buildQuery($args)->insertQuery();
-            $this->dao->getDataMapper()->persist(
-                $query,
-                $this->dao->getDataMapper()->buildInsertQueryParameters($fields)
-            );
-            if ($this->dao->getDataMapper()->numRows() == 1) {
+            $query = $this->dao
+                ->getQueryBuilder()
+                ->buildQuery($args)
+                ->insertQuery();
+            $this->dao
+                ->getDataMapper()
+                ->persist(
+                    $query,
+                    $this->dao
+                        ->getDataMapper()
+                        ->buildInsertQueryParameters($fields)
+                );
+            if (
+                $this->dao
+                ->getDataMapper()
+                ->numRows() == 1
+            ) {
                 // Get the last inserted ID and return it
                 return $this->dao->lastID();
             }
@@ -91,7 +115,9 @@ class ProductDAO extends DAO implements DAOInterface
     }
 
     /**
-     * Summary of readWithOptions
+     * The readWithOptions method returns an array of products with selected
+     * columns and specified conditions, by performing a join operation on
+     * two tables, and executing a select query using the passed options.
      * 
      * @param array $selectors
      * @param array $conditions
@@ -114,7 +140,8 @@ class ProductDAO extends DAO implements DAOInterface
             'product_options.option_value',
             'options.option_name',
         ]);
-        $query = $this->dao->getQueryBuilder()
+        $query = $this->dao
+            ->getQueryBuilder()
             ->buildQuery([
                 'type' => 'select',
                 'table' => 'products',
@@ -122,19 +149,32 @@ class ProductDAO extends DAO implements DAOInterface
                 'conditions' => $conditions,
                 'params' => $parameters
             ])
-            ->innerJoin('product_options', 'products.id = product_options.product_id')
-            ->innerJoin('options', 'product_options.option_id = options.id')
+            ->innerJoin(
+                'product_options',
+                'products.id = product_options.product_id'
+            )
+            ->innerJoin(
+                'options',
+                'product_options.option_id = options.id'
+            )
             ->selectQuery();
-        $this->dao->getDataMapper()->persist(
-            $query,
-            $this->dao->getDataMapper()->buildQueryParameters($conditions, $parameters)
-        );
-        $results = $this->dao->getDataMapper()->results();
+        $this->dao
+            ->getDataMapper()
+            ->persist(
+                $query,
+                $this->dao
+                    ->getDataMapper()
+                    ->buildQueryParameters($conditions, $parameters)
+            );
+        $results = $this->dao
+            ->getDataMapper()
+            ->results();
 
         return $results;
     }
     /**
-     * Summary of read
+     * The read method retrieves data from the database based on the
+     * given parameters, such as selectors, conditions, and parameters.
      * 
      * @param array $selectors
      * @param array $conditions
@@ -164,8 +204,7 @@ class ProductDAO extends DAO implements DAOInterface
                 // ->innerJoin('product_options', 'products.id = product_options.product_id')
                 // ->innerJoin('options', 'product_options.option_id = options.id')
                 ->selectQuery();
-            $this->dao
-                ->getDataMapper()
+            $this->dao->getDataMapper()
                 ->persist(
                     $query,
                     $this->dao
@@ -196,7 +235,9 @@ class ProductDAO extends DAO implements DAOInterface
     public function update(DTOInterface $data, string $primaryKey): bool
     {
         if (!$data instanceof ProductDTO) {
-            throw new InvalidArgumentException('Expected ProductDTO instance.');
+            throw new InvalidArgumentException(
+                'Expected ProductDTO instance.'
+            );
         }
 
         $fields = $data->toArray();
@@ -215,10 +256,15 @@ class ProductDAO extends DAO implements DAOInterface
                 'fields' => $fieldsWithKeys,
                 'primary_key' => $primaryKey
             ];
-            $query = $this->dao->getQueryBuilder()->buildQuery($args)->updateQuery();
+            $query = $this->dao
+                ->getQueryBuilder()
+                ->buildQuery($args)
+                ->updateQuery();
             $this->dao->getDataMapper()->persist(
                 $query,
-                $this->dao->getDataMapper()->buildUpdateQueryParameters($fieldsWithKeys)
+                $this->dao
+                    ->getDataMapper()
+                    ->buildUpdateQueryParameters($fieldsWithKeys)
             );
             if ($this->dao->getDataMapper()->numRows() === 1) {
                 return true;
@@ -230,7 +276,11 @@ class ProductDAO extends DAO implements DAOInterface
         return false;
     }
     /**
-     * Summary of delete
+     * This is a method for deleting records from the database. It receives
+     * an array of conditions that specifies which records to delete. It then
+     * builds and executes a SQL query to delete those records. The method
+     * returns true if the number of deleted rows matches the number of
+     * conditions and false otherwise.
      * 
      * @param array $conditions
      * 
@@ -244,19 +294,39 @@ class ProductDAO extends DAO implements DAOInterface
                 'type' => 'delete',
                 'conditions' => $conditions
             ];
-            $query = $this->dao->getQueryBuilder()->buildQuery($args)->deleteQuery();
-            $parameters = $this->dao->getDataMapper()->buildDeleteQueryParameters($conditions);
-            $this->dao->getDataMapper()->persist($query, $parameters, false, true);
+            $query = $this->dao
+                ->getQueryBuilder()
+                ->buildQuery($args)
+                ->deleteQuery();
+            $parameters = $this->dao
+                ->getDataMapper()
+                ->buildDeleteQueryParameters($conditions);
+            $this->dao
+                ->getDataMapper()
+                ->persist($query, $parameters, false, true);
 
-            if ($this->dao->getDataMapper()->numRows() === count($conditions)) {
+            if (
+                $this->dao
+                ->getDataMapper()
+                ->numRows() === count($conditions)
+            ) {
                 return true;
             }
         } catch (Throwable $throwable) {
             throw $throwable;
         }
-
         return false;
     }
+    /**
+     * This method receives an array of IDs and creates a set of conditions
+     * to delete the corresponding records in the database by calling the delete()
+     * method. It returns a boolean value indicating whether the deletion was
+     * successful or not.
+     * 
+     * @param array $ids
+     * 
+     * @return bool
+     */
     public function deleteByIds(array $ids): bool
     {
         $conditions = [];
@@ -288,24 +358,34 @@ class ProductDAO extends DAO implements DAOInterface
     public function rawQuery(string $rawQuery, DTOInterface $conditions): array
     {
         if (!$conditions instanceof ProductDTO) {
-            throw new InvalidArgumentException('Expected ProductDTO instance.');
+            throw new InvalidArgumentException(
+                'Expected ProductDTO instance.'
+            );
         }
 
         $conditionArray = $conditions->toArray();
 
         try {
-            $this->dao->getDataMapper()->persist(
-                $rawQuery,
-                $this->dao->getDataMapper()->buildQueryParameters($conditionArray)
-            );
-
-            if ($this->dao->getDataMapper()->numRows() > 0) {
-                return $this->dao->getDataMapper()->results();
+            $this->dao
+                ->getDataMapper()
+                ->persist(
+                    $rawQuery,
+                    $this->dao
+                        ->getDataMapper()
+                        ->buildQueryParameters($conditionArray)
+                );
+            if (
+                $this->dao
+                ->getDataMapper()
+                ->numRows() > 0
+            ) {
+                return $this->dao
+                    ->getDataMapper()
+                    ->results();
             }
         } catch (Throwable $throwable) {
             throw $throwable;
         }
-
         return ['no data'];
     }
 }

@@ -16,22 +16,26 @@ use App\DTO\Product\FurnitureDTO;
 use App\Models\Product\Furniture;
 use InvalidArgumentException;
 use App\DTO\DTOInterface;
-use App\DTO\Product\ProductOptionDTO;
 use Throwable;
 
 /**
- * Summary of FurnitureDAO
+ * The FurnitureDAO class is a data access object that extends the ProductDAO class.
+ * It provides methods for creating, updating, and retrieving furniture from a
+ * database.
  */
 class FurnitureDAO extends ProductDAO
 {
     /**
-     * Summary of furnitureModel
+     * It is likely used for accessing and manipulating furniture data in a database.
      *
      * @var Furniture
      */
     protected Furniture $furnitureModel;
     /**
-     * Summary of __construct
+     * The construct method is the constructor of the FurnitureDAO class.
+     * It accepts a furniture object as a parameter, calls the parent constructor with
+     * this object, and assigns the FurnitureModel property to this object. This likely
+     * sets up the FurnitureDAO object for interacting with furniture data in a database.
      *
      * @param Furniture $furnitureModel
      */
@@ -40,6 +44,12 @@ class FurnitureDAO extends ProductDAO
         parent::__construct($furnitureModel);
         $this->furnitureModel = $furnitureModel;
     }
+    /**
+     * The lastId method returns the last inserted ID from the database by calling
+     * the lastId() method of its parent class.
+     * 
+     * @return int
+     */
     public function lastId(): int
     {
         return parent::lastId();
@@ -58,7 +68,9 @@ class FurnitureDAO extends ProductDAO
     public function create(DTOInterface $data): ?int
     {
         if (!$data instanceof FurnitureDTO) {
-            throw new InvalidArgumentException('Expected FurnitureDTO instance.');
+            throw new InvalidArgumentException(
+                'Expected FurnitureDTO instance.'
+            );
         }
         try {
             // Convert FurnitureDTO to array
@@ -71,11 +83,18 @@ class FurnitureDAO extends ProductDAO
                 'type' => 'insert',
                 'fields' => $fields
             ];
-            $query = $this->dao->getQueryBuilder()->buildQuery($args)->insertQuery();
-            $this->dao->getDataMapper()->persist(
-                $query,
-                $this->dao->getDataMapper()->buildInsertQueryParameters($fields)
-            );
+            $query = $this->dao
+                ->getQueryBuilder()
+                ->buildQuery($args)
+                ->insertQuery();
+            $this->dao
+                ->getDataMapper()
+                ->persist(
+                    $query,
+                    $this->dao
+                        ->getDataMapper()
+                        ->buildInsertQueryParameters($fields)
+                );
 
             if ($this->dao->getDataMapper()->numRows() == 1) {
                 // Get the last inserted ID and return it
@@ -118,12 +137,20 @@ class FurnitureDAO extends ProductDAO
                 'fields' => $fields,
                 'primary_key' => $primaryKey
             ];
-            $query = $this->dao->getQueryBuilder()->buildQuery($args)->updateQuery();
-            
-            $this->dao->getDataMapper()->persist(
-                $query,
-                $this->dao->getDataMapper()->buildUpdateQueryParameters($fields)
-            );
+            $query = $this->dao
+                ->getQueryBuilder()
+                ->buildQuery($args)
+                ->updateQuery();
+
+            $this->dao
+                ->getDataMapper()
+                ->persist(
+                    $query,
+
+                    $this->dao
+                        ->getDataMapper()
+                        ->buildUpdateQueryParameters($fields)
+                );
             if ($this->dao->getDataMapper()->numRows() === 1) {
                 return true;
             }
@@ -133,50 +160,12 @@ class FurnitureDAO extends ProductDAO
         return false;
     }
     /**
-     * Find all furnitures
-     * 
-     * @param array $selectors
-     * @param array $conditions
-     * @param array $parameters
-     * @param array $optional
+     * The method returns an array of all furnitures that belong to the category ID
+     * stored in the furnitureModel object, by calling the readWithOptions()
+     * method with specific options.
      * 
      * @return array
      */
-    // public function findAllFurnitures(
-    //     array $selectors = [],
-    //     array $conditions = [],
-    //     array $parameters = [],
-    // ): array {
-    //     try {
-    //         $args = [
-    //             'table' => $this->dao->getSchema(),
-    //             'type' => 'select',
-    //             'selectors' => $selectors,
-    //             'conditions' => $conditions,
-    //             'parameters' => $parameters,
-    //         ];
-    //         $query = $this->dao
-    // 			->getQueryBuilder()
-    // 			->buildQuery($args)
-    // 			->innerJoin('product_options', 'products.id = product_options.product_id')
-    // 			->innerJoin('options', 'product_options.option_id = options.id')
-    // 			->selectQuery();
-    //         $this->dao
-    //             ->getDataMapper()
-    //             ->persist(
-    //                 $query,
-    //                 $this->dao
-    //                     ->getDataMapper()
-    //                     ->buildQueryParameters($conditions)
-    //             );
-    //         if ($this->dao->getDataMapper()->numRows() > 0) {
-    //             return $this->dao->getDataMapper()->results();
-    //         }
-    //     } catch (Throwable $e) {
-    //         return [$e->getMessage()];
-    //     }
-    //     return ['no data'];
-    // }
     public function getAllFurnitures(): array
     {
         $conditions = ['*'];

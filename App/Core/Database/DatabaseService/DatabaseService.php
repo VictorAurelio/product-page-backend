@@ -20,14 +20,28 @@ use Throwable;
 use PDO;
 
 /**
- * Summary of DatabaseService
+ * The DatabaseService class is a service layer that provides methods to execute
+ * database operations using PDO.
  */
 class DatabaseService implements DatabaseServiceInterface
 {
+    /**
+     * an instance of the Connection class
+     * 
+     * @var Connection
+     */
     protected Connection $connection;
+    /**
+     * a private property of type PDOStatement used to store the prepared
+     * statement of a query.
+     * 
+     * @var PDOStatement
+     */
     private PDOStatement $_statement;
     /**
-     * Summary of __construct
+     * Constructor that receives a Connection object and initializes
+     * the DatabaseService.
+     * 
      * @param Connection $connection
      */
     public function __construct(Connection $connection)
@@ -35,10 +49,14 @@ class DatabaseService implements DatabaseServiceInterface
         $this->connection = $connection;
     }
     /**
-     * Summary of isEmpty
+     * Private method that throws a DatabaseServiceException if the value passed
+     * as argument is empty.
+     * 
      * @param string|null $errorMessage
-     * @throws DatabaseServiceException
      * @param mixed $value
+     * 
+     * @throws DatabaseServiceException
+     * 
      * @return void
      */
     private function isEmpty($value, string $errorMessage = null)
@@ -48,20 +66,29 @@ class DatabaseService implements DatabaseServiceInterface
         }
     }
     /**
-     * Summary of isArray
-     * @throws DatabaseServiceException
+     * Private method that throws a DatabaseServiceException if the value passed
+     * as argument is not an array.
+     * 
      * @param array $value
+     * 
+     * @throws DatabaseServiceException
+     * 
      * @return void
      */
     private function isArray(array $value)
     {
         if (!is_array($value)) {
-            throw new DatabaseServiceException('Your argument needs to be an array');
+            throw new DatabaseServiceException(
+                'Your argument needs to be an array'
+            );
         }
     }
     /**
-     * Summary of prepare
+     * Method that prepares the SQL query for execution and returns
+     * the DatabaseService.
+     * 
      * @param string $sqlQuery
+     * 
      * @return DatabaseService
      */
     public function prepare(string $sqlQuery): self
@@ -70,59 +97,86 @@ class DatabaseService implements DatabaseServiceInterface
         return $this;
     }
     /**
-     * Summary of bind
+     * Method that binds a value to a parameter and returns the data type
+     * of the value.
+     * 
      * @param mixed $value
+     * 
      * @return mixed
      */
     public function bind($value): mixed
     {
-        try {
-            switch ($value) {
-                case is_bool($value):
-                case intval($value);
-                    $dataType = PDO::PARAM_INT;
-                    break;
-                case is_null($value):
-                    $dataType = PDO::PARAM_NULL;
-                    break;
-                default:
-                    $dataType = PDO::PARAM_STR;
-                    break;
-            }
-            return $dataType;
-        } catch (DatabaseServiceException $exception) {
-            throw $exception;
+        if (is_bool($value) || is_int($value)) {
+            return PDO::PARAM_INT;
         }
+
+        if (is_null($value)) {
+            return PDO::PARAM_NULL;
+        }
+
+        if (is_string($value)) {
+            return PDO::PARAM_STR;
+        }
+
+        throw new DatabaseServiceException(
+            'Unknown data type for binding parameter'
+        );
     }
     /**
+     * Method that binds an array of parameters to the SQL query and returns
+     * the DatabaseService.
+     * 
      * @inheritDoc
      *
      * @param array $fields
      * @param boolean $isSearch
+     * 
      * @return self
      */
     public function bindParameters(array $fields, bool $isSearch = false): self
     {
         $this->isArray($fields);
-        if (is_array($fields)) {
-            $type = ($isSearch === false) ? $this->bindValues($fields) : $this->bindSearchValues($fields);
-            if ($type) {
-                return $this;
-            }
+
+        if (!is_array($fields)) {
+            return $this;
         }
+
+        $type = ($isSearch === false) ?
+            $this->bindValues($fields) :
+            $this->bindSearchValues($fields);
+
+        if (!$type) {
+            return $this;
+        }
+
+        return $this;
     }
+    /**
+     * Protected method that binds multiple parameters to the SQL query
+     * for mass deletion.
+     * 
+     * @param array $parameters
+     * 
+     * @return PDOStatement
+     */
     protected function bindMassDeleteParameters(array $parameters): PDOStatement
     {
         $paramIndex = 1;
         foreach ($parameters as $value) {
-            $this->_statement->bindValue($paramIndex, $value, $this->bind($value));
+            $this->_statement
+                ->bindValue(
+                    $paramIndex,
+                    $value,
+                    $this->bind($value)
+                );
             $paramIndex++;
         }
         return $this->_statement;
     }
 
     /**
-     * Summary of bindValues
+     * Protected method that binds parameter values to the SQL query
+     * for a regular search.
      * 
      * @param array $fields
      * 
@@ -135,13 +189,19 @@ class DatabaseService implements DatabaseServiceInterface
             if (strpos($key, ':') !== 0) {
                 $key = ':' . $key;
             }
-            $this->_statement->bindValue($key, $value, $this->bind($value));
+            $this->_statement
+                ->bindValue(
+                    $key,
+                    $value,
+                    $this->bind($value)
+                );
         }
         return $this->_statement;
     }
 
     /**
-     * Summary of bindSearchValues
+     * Protected method that binds parameter values to the SQL query
+     * for a search operation.
      * 
      * @param array $fields
      * 
@@ -151,13 +211,18 @@ class DatabaseService implements DatabaseServiceInterface
     {
         $this->isArray($fields); // don't need
         foreach ($fields as $key => $value) {
-            $this->_statement->bindValue(':' . $key,  '%' . $value . '%', $this->bind($value));
+            $this->_statement
+                ->bindValue(
+                    ':' . $key,
+                    '%' . $value . '%',
+                    $this->bind($value)
+                );
         }
         return $this->_statement;
     }
 
     /**
-     * Summary of execute
+     * Method that executes the prepared SQL query.
      * 
      * @return bool
      */
@@ -167,7 +232,8 @@ class DatabaseService implements DatabaseServiceInterface
             return $this->_statement->execute();
     }
     /**
-     * Summary of numRows
+     * Method that returns the number of rows affected by
+     * the last SQL query executed.
      * 
      * @return integer
      */
@@ -178,7 +244,8 @@ class DatabaseService implements DatabaseServiceInterface
     }
 
     /**
-     * Summary of result
+     * Method that returns the first row of the result set as an object.
+     * 
      * @return object|null
      */
     public function result(): ?Object
@@ -190,7 +257,10 @@ class DatabaseService implements DatabaseServiceInterface
     }
 
     /**
+     * Method that returns the entire result set as an array.
+     * 
      * @inheritDoc
+     * 
      * @return array
      */
     public function results(): array
@@ -199,23 +269,38 @@ class DatabaseService implements DatabaseServiceInterface
             return $this->_statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
     /**
-     * @inheritDoc
-     * @throws Throwable
+     * 
+     * Method that returns the last inserted ID.
+     * 
+     * @return int
      */
     public function getLastId(): int
     {
+        if (!$this->connection->pdo()) {
+            return 0;
+        }
+
         try {
-            if ($this->connection->pdo()) {
-                $lastID = $this->connection->pdo()->lastInsertId();
-                if (!empty($lastID)) {
-                    return intval($lastID);
-                }
+            $lastID = $this->connection->pdo()->lastInsertId();
+            if (!empty($lastID)) {
+                return intval($lastID);
             }
         } catch (Throwable $throwable) {
             throw $throwable;
         }
+
+        return 0;
     }
+    /**
+     * Method that extracts values from an array of conditions
+     * to build a DELETE query.
+     * 
+     * @param array $conditions
+     * 
+     * @return array
+     */
     public function buildDeleteQueryParameters(array $conditions = []): array
     {
         $parameters = [];
@@ -226,6 +311,14 @@ class DatabaseService implements DatabaseServiceInterface
         }
         return $parameters;
     }
+    /**
+     * Method that extracts values from an array of fields
+     * to build an UPDATE query.
+     * 
+     * @param array $fields
+     * 
+     * @return array
+     */
     public function buildUpdateQueryParameters(array $fields = []): array
     {
         $parameters = [];
@@ -238,10 +331,28 @@ class DatabaseService implements DatabaseServiceInterface
         $parameters[':id'] = $fields['id'];
         return $parameters;
     }
+    /**
+     * Method that merges two arrays of parameters
+     * to build an INSERT query.
+     * 
+     * @param array $conditions
+     * @param array $parameters
+     * 
+     * @return array
+     */
     public function buildInsertQueryParameters(array $conditions = [], array $parameters = []): array
     {
         return (!empty($parameters) || (!empty($conditions)) ? array_merge($conditions, $parameters) : $parameters);
     }
+    /**
+     * Method that extracts values from an array of conditions to build a query.
+     * Will likely be used mostly for read/search.
+     * 
+     * @param array $conditions
+     * @param array $parameters
+     * 
+     * @return array
+     */
     public function buildQueryParameters(array $conditions = [], array $parameters = []): array
     {
         if (empty($conditions)) {
@@ -253,22 +364,27 @@ class DatabaseService implements DatabaseServiceInterface
             if (preg_match_all('/:(\w+)/', $condition, $matches)) {
                 foreach ($matches[1] as $paramName) {
                     if (isset($parameters[':' . $paramName])) {
-                        $allParameters[':' . $paramName] = $parameters[':' . $paramName];
+
+                        $allParameters[':' . $paramName]
+                            = $parameters[':' . $paramName];
                     }
                 }
             }
         }
-
         return $allParameters;
     }
 
     /**
-     * Summary of persist
+     * Method that executes a SQL query with the given parameters and throws
+     * a PDOException if there is an error.
+     * 
      * @param string $sqlQuery
      * @param array $parameters
      * @param bool $search
      * @param bool $isMassDelete
+     * 
      * @throws PDOException
+     * 
      * @return void
      */
     public function persist(string $sqlQuery, array $parameters, bool $search = false, bool $isMassDelete = false): void
