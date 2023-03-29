@@ -151,9 +151,9 @@ class BookController implements ProductSpecificControllerInterface
 
         $this->productController->getValidator()->validate($data, [
             'sku' => ['required', "exist:products,sku,$currentSku", 'no_whitespace'],
-            'price' => ['numeric', 'not_null'],
+            'price' => ['required', 'numeric', 'not_null'],
             'category_id' => ['required'],
-            'weight' => ['numeric', 'not_null']
+            'weight' => ['required', 'numeric', 'not_null']
         ]);
 
         // Get the ID of the corresponding option for the product type
@@ -174,13 +174,10 @@ class BookController implements ProductSpecificControllerInterface
 
         $productOption->updateOption($productOptionDTO);
 
-        if ($updatedBook || $productOption) {
-            $result = ['message' => 'Book updated successfully', 'status' => 201];
-        } else {
-            $result = ['message' => 'Error updating book', 'status' => 500];
+        if (!$productOption && !$updatedBook) {
+            return ['message' => 'Error updating book', 'status' => 400];
         }
-
-        return $result;
+        return ['message' => 'Book updated successfully', 'status' => 201];
     }
     /**
      * The createDTO() method is a helper method that creates and returns

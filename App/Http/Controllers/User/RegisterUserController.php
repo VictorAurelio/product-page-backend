@@ -48,7 +48,7 @@ class RegisterUserController extends UserController
         $data = $this->sanitizer->clean($data);
 
         $this->validator->validate($data, [
-            'name' => ['required'],
+            'name' => ['required', 'no_whitespace'],
             'email' => ['required', 'unique', 'email'],
             'password' => ['required', 'min:8'],
             'password_confirmation' => ['required', 'match:password']

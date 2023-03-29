@@ -16,6 +16,7 @@ use App\Core\Database\DatabaseService\DatabaseService;
 use App\Core\Validation\Exception\ValidationException;
 use App\Core\Database\QueryBuilder\MysqlQueryBuilder;
 use App\Core\Database\Connection\ConnectionInterface;
+use App\Core\Validation\Rule\NoWhitespaceRule;
 use App\Http\Controllers\User\LogoutUserController;
 use App\Core\Validation\Rule\Data\DataSanitizer;
 use App\Core\Validation\Rule\RequiredRule;
@@ -106,6 +107,7 @@ class UserController extends Controller
             )
             ->addRule('email', new EmailRule())
             ->addRule('required', new RequiredRule())
+            ->addRule('no_whitespace', new NoWhitespaceRule())
             ->addRule('match', new MatchRule())
             ->addRule('min', new MinRule());
 

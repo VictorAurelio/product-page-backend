@@ -174,13 +174,11 @@ class DvdController implements ProductSpecificControllerInterface
 
         $productOption->updateOption($productOptionDTO);
 
-        if ($updatedDVD || $productOption) {
-            $result = ['message' => 'Dvd updated successfully', 'status' => 201];
-        } else {
-            $result = ['message' => 'Error updating dvd', 'status' => 500];
+        if (!$productOption && !$updatedDVD) {
+            return ['message' => 'Error updating DVD', 'status' => 400];
         }
 
-        return $result;
+        return ['message' => 'DVD updated successfully', 'status' => 201];
     }
     /**
      * The createDTO method is a helper method that creates and returns

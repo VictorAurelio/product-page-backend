@@ -183,12 +183,11 @@ class FurnitureController implements ProductSpecificControllerInterface
 
         $productOption->updateOption($productOptionDTO);
 
-        if ($updatedFurniture || $productOption) {
-            $result = ['message' => 'Furniture updated successfully', 'status' => 201];
-        } else {
-            $result = ['message' => 'Error updating furniture', 'status' => 500];
+        if (!$productOption && !$updatedFurniture) {
+            return ['message' => 'Error updating furniture', 'status' => 400];
         }
-        return $result;
+
+        return ['message' => 'Furniture updated successfully', 'status' => 201];
     }
     /**
      * The createDTO method is a helper method that creates and returns

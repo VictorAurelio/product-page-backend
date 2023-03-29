@@ -144,9 +144,7 @@ class ProductController extends Controller
 
         if ($method !== 'DELETE') {
             $this->json(
-                [
-                    'message' => 'Invalid method for mass delete'
-                ],
+                ['message' => 'Invalid method for mass delete'],
                 405
             );
             return;
@@ -169,9 +167,7 @@ class ProductController extends Controller
             // Frontend will handle the form rendering when accessed through GET.
             header('Content-Type: application/json');
             $this->json(
-                [
-                    'message' => 'Form should be displayed on frontend'
-                ],
+                ['message' => 'Form should be displayed on frontend'],
                 200
             );
             return;
@@ -179,9 +175,7 @@ class ProductController extends Controller
 
         if ($method !== 'POST') {
             $this->json(
-                [
-                    'message' => 'Invalid method for adding product'
-                ],
+                ['message' => 'Invalid method for adding product'],
                 405
             );
             return;
@@ -225,9 +219,7 @@ class ProductController extends Controller
         }
 
         $this->json(
-            [
-                'message' => 'Invalid method for updating product'
-            ],
+            ['message' => 'Invalid method for updating product'],
             405
         );
     }
@@ -255,9 +247,7 @@ class ProductController extends Controller
     {
         if ($this->getMethod() !== 'POST') {
             $this->json(
-                [
-                    'message' => 'Invalid method for inserting product'
-                ],
+                ['message' => 'Invalid method for inserting product'],
                 405
             );
         }
@@ -316,9 +306,7 @@ class ProductController extends Controller
                 $productOption->createOption($productOptionDTO);
             }
             $this->json(
-                [
-                    'message' => $result['message']
-                ],
+                ['message' => $result['message']],
                 $result['status']
             );
         } catch (ValidationException $e) {
@@ -328,9 +316,7 @@ class ProductController extends Controller
             );
         } catch (InvalidArgumentException $e) {
             $this->json(
-                [
-                    'message' => $e->getMessage()
-                ],
+                ['message' => $e->getMessage()],
                 400
             );
         }
@@ -356,9 +342,7 @@ class ProductController extends Controller
     {
         if ($this->getMethod() !== 'POST') {
             $this->json(
-                [
-                    'message' => 'Invalid method for updating product'
-                ],
+                ['message' => 'Invalid method for updating product'],
                 405
             );
         }
@@ -382,9 +366,7 @@ class ProductController extends Controller
             $result = $productController->updateProduct($productId, $data);
 
             $this->json(
-                [
-                    'message' => $result['message']
-                ],
+                ['message' => $result['message']],
                 $result['status']
             );
         } catch (ValidationException $e) {
@@ -394,9 +376,7 @@ class ProductController extends Controller
             );
         } catch (InvalidArgumentException $e) {
             $this->json(
-                [
-                    'message' => $e->getMessage()
-                ],
+                ['message' => $e->getMessage()],
                 400
             );
         }
@@ -423,9 +403,7 @@ class ProductController extends Controller
     {
         if ($this->getMethod() !== 'POST') {
             $this->json(
-                [
-                    'message' => 'Invalid method for mass delete'
-                ],
+                ['message' => 'Invalid method for mass delete'],
                 405
             );
             return;
@@ -457,9 +435,7 @@ class ProductController extends Controller
             return;
         } catch (Exception $e) {
             $this->json(
-                [
-                    'message' => $e->getMessage()
-                ],
+                ['message' => $e->getMessage()],
                 400
             );
             return;
