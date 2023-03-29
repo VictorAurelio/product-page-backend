@@ -1,9 +1,19 @@
 <?php
 
+/**
+ * This file is part of my Product Page project.
+ *
+ * @category  Validation rule
+ * @package   App\Core\Validation\Rule
+ * @author    Victor Aurélio Rodrigues Ribeiro <victoraurelio_198@hotmail.com>
+ * @copyright (c) 2023 Victor Aurelio
+ * @link      https://github.com/VictorAurelio/product-page
+ */
+
 namespace App\Core\Validation\Rule;
 
 /**
- * Validation created to avoid inserts of null/negative values in numeric fields
+ * Validation created to prevent inserts of null/negative values in numeric fields
  */
 class NotNullOrNegativeRule implements Rule
 {

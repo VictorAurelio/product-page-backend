@@ -32,15 +32,57 @@ use App\Auth\Authentication;
 use App\DTO\User\UserDTO;
 use App\Core\Controller;
 
+/**
+ * This class manages user-related operations
+ */
 class UserController extends Controller
 {
+    /**
+     * An instance of ConnectionInterface used for connecting to the database.
+     * 
+     * @var ConnectionInterface
+     */
     protected ConnectionInterface $connection;
+    /**
+     * An instance of Authentication used for user authentication with JWT.
+     * 
+     * @var Authentication
+     */
     protected Authentication $authentication;
+    /**
+     * An instance of DataSanitizer used for sanitizing data.
+     * 
+     * @var DataSanitizer
+     */
     protected DataSanitizer $sanitizer;
+    /**
+     * An instance of Validator.
+     * 
+     * @var Validator
+     */
     protected Validator $validator;
+    /**
+     * An instance of UserModel.
+     * 
+     * @var UserModel
+     */
     protected UserModel $userModel;
+    /**
+     * An instance of UserDAO
+     * 
+     * @var UserDAO
+     */
     protected UserDAO $userDAO;
+    /**
+     * An instance of DAO.
+     * 
+     * @var DAO
+     */
     protected DAO $dao;
+    /**
+     * Initializes the UserController by setting up a database connection,
+     * user model, user DAO, validator, authentication, and sanitizer.
+     */
     public function __construct()
     {
         $this->connection = DatabaseFactory::createConnection();
@@ -54,7 +96,14 @@ class UserController extends Controller
         $this->userDAO = new UserDAO($this->dao);
         $this->validator = new Validator();
         $this->validator
-            ->addRule('unique', new UniqueRule($this->connection, 'users', 'email'))
+            ->addRule(
+                'unique',
+                new UniqueRule(
+                    $this->connection,
+                    'users',
+                    'email'
+                )
+            )
             ->addRule('email', new EmailRule())
             ->addRule('required', new RequiredRule())
             ->addRule('match', new MatchRule())
@@ -63,32 +112,23 @@ class UserController extends Controller
         $this->authentication = new Authentication();
         $this->sanitizer = new DataSanitizer();
     }
+    /**
+     * Summary of index
+     * 
+     * @return void
+     */
     public function index()
     {
-        $users = $this->userDAO->read(['name', 'email']);
-        var_dump($users);
-        // $this->redirect('/home');
+        $this->redirect('/home');
     }
-    // public function view($id)
-    // {
-    //     $array = ['error' => '', 'logged' => false];
-
-    //     $method = $this->getMethod();
-    //     $payload = $this->getRequestData();
-    //     var_dump($payload);
-    //     if (!empty($payload['jwt']) && $this->userModel->validateJwt($payload['jwt'])) {
-    //         $array['logged'] = true;
-    //         echo 'logado';
-    //         $array['self'] = false;
-    //         if ($id == $this->userModel->getUserIdFromJwt($payload['jwt'])) {
-    //             $array['self'] = true;
-    //         }
-    //     } else {
-    //         $array['error'] = 'acesso negado';
-    //     }
-
-    //     // $this->json($array);
-    // }
+    /**
+     * Validates access method and user input and instantiates the
+     * register controller. Returns a JSON response with a success
+     * or error message and status code according to the result received
+     * from the RegisterUserController.
+     * 
+     * @return void
+     */
     public function signUp()
     {
         if ($this->getMethod() !== 'POST') {
@@ -119,7 +159,7 @@ class UserController extends Controller
      *
      * @return UserDTO
      */
-    public function createUserDTO(array $data): UserDTO
+    protected function createUserDTO(array $data): UserDTO
     {
         $userDTO = new UserDTO();
         $userDTO->setName($data['name']);
@@ -128,6 +168,14 @@ class UserController extends Controller
 
         return $userDTO;
     }
+    /**
+     * Similar to the signUp, this function validates request method and user input
+     * before instantiating the login controller. Returns a JSON response with a
+     * success or error message and status code, according to the results received
+     * from the LoginUserController.
+     * 
+     * @return void
+     */
     public function signIn()
     {
         if ($this->getMethod() !== 'POST') {
@@ -151,10 +199,25 @@ class UserController extends Controller
             $this->json($e->getErrors(), 400);
         }
     }
+    /**
+     * This method first check if the request method is correct and then validates
+     * the actual JWT token, so we can make sure the token being passed
+     * is valid and belongs to the user logged in. Just additional validation,
+     * probably won't needed in this project.
+     * 
+     * @return void
+     */
     public function logoutValidate()
     {
         if ($this->getMethod() !== 'POST') {
-            $this->json(['message' => 'Invalid method for logging out'], ['status' => 405]);
+            $this->json(
+                [
+                    'message' => 'Invalid method for logging out'
+                ],
+                [
+                    'status' => 405
+                ]
+            );
         }
         $authorizationHeader = $this->authentication->getAuthorizationHeader();
         $jwt = $this->authentication->getBearerToken($authorizationHeader);
@@ -165,14 +228,32 @@ class UserController extends Controller
         if ($isLogoutSuccessful) {
             $this->json(['message' => 'Logout successful'], ['status' => 201]);
         } else {
-            $this->json(['message' => 'Error logging out. Please try again.'], ['status' => 400]);
+            $this->json(
+                [
+                    'message' => 'Error logging out. Please try again.'
+                ],
+                [
+                    'status' => 400
+                ]
+            );
         }
     }
+    /**
+     * This function is responsible for refreshing the JWT token of the logged user
+     * according to some actions our user will do, to stay logged in.
+     * 
+     * @return void
+     */
     public function refreshToken()
     {
         // Verify the request method
         if ($this->getMethod() !== 'POST') {
-            $this->json(['message' => 'Invalid method for refreshing token'], 405);
+            $this->json(
+                [
+                    'message' => 'Invalid method for refreshing token'
+                ],
+                405
+            );
         }
 
         // Verify if the current JWT is valid
@@ -190,6 +271,10 @@ class UserController extends Controller
         $this->json(['jwt' => $newJwt], 200);
     }
 
+    /**
+     * 
+     * @return bool
+     */
     public function verifyAuthentication()
     {
         // Verify if the current JWT is valid

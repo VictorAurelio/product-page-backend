@@ -19,15 +19,32 @@ use App\Core\Database\QueryBuilder\MysqlQueryBuilder;
 use App\Core\Model;
 use App\DTO\DTOInterface;
 
+/**
+ * Main Product Model which is an abstract class and extends our main Model class.
+ * It is intended to standardize the specific products models as well as providing
+ * useful ways to retrieve what must be common between them, like the table name.
+ */
 abstract class Product extends Model
 {
     public const TABLESCHEMA = 'products';
     public const TABLESCHEMAID = 'id';
 
+    /**
+     * It's construct requires the connection interface and passes to it's parent
+     * this table-schema, primary-key and also the connection.
+     * 
+     * @param ConnectionInterface $connection
+     */
     public function __construct(ConnectionInterface $connection)
     {
         parent::__construct(self::TABLESCHEMA, self::TABLESCHEMAID, $connection);
     }
+    /**
+     * getDao provides the necessary data to ProductDAO to make the necessary
+     * queries in the correct place.
+     * 
+     * @return DAO
+     */
     public function getDao(): DAO
     {
         return new DAO(

@@ -14,13 +14,35 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\User\UserController;
 
+/**
+ * Controller class for handling user registration
+ */
 class RegisterUserController extends UserController
 {
+    /**
+     * Constructor for RegisterUserController class. Initializes
+     * it with the UserController object
+     * 
+     * @param UserController $userController - instance of UserController
+     */
     public function __construct(UserController $userController)
     {
         parent::__construct();
     }
-
+    /**
+     * Registers a new user with the given data and returns an array containing
+     * the success status, message, JWT token and user ID.
+     * 
+     * I'm also using PHP default password hash, and validating the data with the
+     * validation rules (App/Core/Validation/Rule) which is the way I've found
+     * to keep my code as clean as possible.
+     * 
+     * @param array $data
+     * 
+     * @throws \Exception
+     * 
+     * @return array
+     */
     public function register(array $data): array
     {
         $data = $this->sanitizer->clean($data);
@@ -32,7 +54,7 @@ class RegisterUserController extends UserController
             'password_confirmation' => ['required', 'match:password']
         ]);
 
-        unset($data['password_confirmation']);
+        unset($data['password_confirmation']); // remove the password_confirmation
 
         $password_hash = password_hash($data['password'], PASSWORD_DEFAULT);
         $plain_password = $data['password'];
@@ -45,7 +67,8 @@ class RegisterUserController extends UserController
         $userDTO = $this->createUserDTO($data);
         $user = $this->userDAO->create($userDTO);
 
-        $userId = $this->userModel->checkCredentials($data['email'], $plain_password);
+        $userId = $this->userModel
+                        ->checkCredentials($data['email'], $plain_password);
         
         $result = match (true) {
         !$user => ['message' => 'Error creating user', 'status' => 500],

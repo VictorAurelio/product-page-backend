@@ -15,7 +15,7 @@ namespace App\Core;
 use App\Core\Exceptions\AppInvalidRequestException;
 
 /**
- * Summary of Controller
+ * Main controller class which contains useful methods for those who inherit it.
  */
 class Controller
 {
@@ -48,7 +48,6 @@ class Controller
         if (!is_array($data)) {
             throw new AppInvalidRequestException('Invalid request data');
         }
-        // header('Content-Type: application/json');
         return $data;
     }
     /**

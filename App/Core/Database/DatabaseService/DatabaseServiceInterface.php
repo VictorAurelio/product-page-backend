@@ -4,7 +4,7 @@
  * This file is part of my Product Page project.
  *
  * @category  Interface
- * @package   App\Core\Database
+ * @package   App\Core\Database\DatabaseService
  * @author    Victor Aurélio Rodrigues Ribeiro <victoraurelio_198@hotmail.com>
  * @copyright (c) 2023 Victor Aurelio
  * @link      https://github.com/VictorAurelio/product-page

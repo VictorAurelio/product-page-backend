@@ -14,14 +14,26 @@ namespace App\Http\Controllers;
 
 use App\Core\Controller;
 
+/**
+ * HomeController
+ */
 class HomeController extends Controller
 {
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
     }
 
+    /**
+     * Not needed since I'm using this home route already for showing all the
+     * products but can be used for redirect if wanted.
+     * 
+     * @return void
+     */
     public function index()
     {
-        echo ' home ';
+        $this->redirect('/home');
     }
 }
